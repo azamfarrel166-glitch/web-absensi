@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#042211">
-    <title>Web Admin & Piket E-Absensi | Yayasan Al-Amin Tabanan</title>
+    <title>Web Admin & Piket E-Absensi | MA AL-AMIN TABANAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -66,6 +66,14 @@
             transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .ios-pill-btn:active { transform: scale(0.94); }
+        .clean-school-logo {
+            border-radius: 1.15rem;
+            overflow: hidden;
+            filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.5));
+            border: 1px solid rgba(250, 204, 21, 0.35);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+        }
 
         /* Tata Letak Cetak Khusus: Kartu ID 85x54mm (8 per halaman A4) & Lembar PIN Terpisah */
         #printAreaContainer { display: none; }
@@ -124,6 +132,18 @@
 <body class="min-h-screen pb-32 selection:bg-yellow-400 selection:text-green-950">
     <div class="ambient-bg"></div>
 
+    <!-- OVERLAY LOADING SAAT LOGIN / SINKRONISASI AWAL -->
+    <div id="adminLoadingOverlay" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+        <div class="ios-glass-thick rounded-3xl p-6 max-w-xs w-full flex flex-col items-center space-y-3 border border-yellow-400/40">
+            <img data-school-logo src="https://drive.google.com/thumbnail?id=16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY&sz=w256"
+                 onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY=w256';"
+                 alt="Logo MA AL-AMIN TABANAN" class="w-14 h-14 object-cover rounded-2xl clean-school-logo animate-pulse">
+            <div class="w-8 h-8 border-3 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <p id="adminLoadingText" class="text-xs font-extrabold text-yellow-300">Memverifikasi Otorisasi Staf...</p>
+            <p class="text-[11px] text-white/65">Mohon tunggu sebentar...</p>
+        </div>
+    </div>
+
     <!-- AREA CETAK KHUSUS (KARTU 85x54mm) -->
     <div id="printAreaContainer"></div>
 
@@ -164,10 +184,13 @@
     <div id="authGateModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
         <div class="ios-glass-thick rounded-3xl p-6 max-w-md w-full space-y-4 border border-yellow-400/40">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-800/60 border border-yellow-400 flex items-center justify-center text-yellow-400 font-black text-xl">AA</div>
+                <img data-school-logo src="https://drive.google.com/thumbnail?id=16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY&sz=w256"
+                     onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY=w256';"
+                     alt="Logo MA AL-AMIN TABANAN" class="w-14 h-14 rounded-2xl object-cover clean-school-logo shrink-0">
                 <div>
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-yellow-400">Otorisasi Staf Yayasan</span>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-yellow-400">Otorisasi Staf MA AL-AMIN TABANAN</span>
                     <h2 class="text-lg font-extrabold text-white">Login Web Admin & Piket</h2>
+                    <p class="text-[11px] text-emerald-200/80">Gg. IV No.9, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121</p>
                 </div>
             </div>
 
@@ -187,8 +210,9 @@
                 <p id="loginErrorText" class="hidden text-xs font-bold text-rose-400"></p>
             </div>
 
-            <button onclick="submitStaffLogin()" id="loginSubmitBtn" class="w-full ios-pill-btn py-3 rounded-2xl bg-yellow-400 text-green-950 font-extrabold text-xs shadow-lg">
-                Masuk & Buka Sesi
+            <button onclick="submitStaffLogin()" id="loginSubmitBtn" class="w-full ios-pill-btn py-3 rounded-2xl bg-yellow-400 text-green-950 font-extrabold text-xs shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                <i class="ph-bold ph-sign-in text-sm"></i>
+                <span id="loginSubmitBtnText">Masuk & Buka Sesi</span>
             </button>
         </div>
     </div>
@@ -197,11 +221,13 @@
     <div id="kioskContainer" class="hidden fixed inset-0 z-40 bg-[#021309] overflow-y-auto flex flex-col justify-between p-4 sm:p-6">
         <div class="flex items-center justify-between ios-glass rounded-3xl p-4 border border-yellow-400/30">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-emerald-800/60 border border-yellow-400 flex items-center justify-center text-yellow-400 font-black text-lg">AA</div>
+                <img data-school-logo src="https://drive.google.com/thumbnail?id=16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY&sz=w256"
+                     onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY=w256';"
+                     alt="Logo MA AL-AMIN TABANAN" class="w-12 h-12 rounded-2xl object-cover clean-school-logo shrink-0">
                 <div>
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-yellow-400">KIOSK SCANNER GERBANG</span>
-                    <h1 id="kioskSchoolName" class="text-base sm:text-xl font-black text-white">Yayasan Al-Amin Tabanan (MTS Al-Amin Tabanan)</h1>
-                    <p id="kioskSchoolAddress" class="text-[11px] text-emerald-200/80">Gg. IV No.8, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121</p>
+                    <h1 id="kioskSchoolName" class="text-base sm:text-xl font-black text-white">MA AL-AMIN TABANAN</h1>
+                    <p id="kioskSchoolAddress" class="text-[11px] text-emerald-200/80">MA AL-AMIN TABANAN, Gg. IV No.9, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121</p>
                 </div>
             </div>
             <div class="text-right">
@@ -246,17 +272,17 @@
     <header id="mainHeader" class="pt-14 pb-3 px-4 max-w-5xl mx-auto space-y-2.5">
         <div class="ios-glass rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-3 w-full sm:w-auto">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-800/70 border-2 border-yellow-400 flex items-center justify-center font-black text-yellow-300 text-lg shrink-0">
-                    AA
-                </div>
+                <img data-school-logo src="https://drive.google.com/thumbnail?id=16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY&sz=w256"
+                     onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY=w256';"
+                     alt="Logo MA AL-AMIN TABANAN" class="w-12 h-12 rounded-2xl object-cover clean-school-logo shrink-0">
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
                         <span id="roleStatusBadge" class="px-2 py-0.5 text-[10px] font-extrabold uppercase rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/40">BELUM LOGIN</span>
                         <span id="liveClock" class="text-xs font-mono text-emerald-300 font-bold">07:00:00 WITA</span>
                         <span id="syncSafetyBadge" class="px-2 py-0.5 text-[10px] font-extrabold rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Data aman</span>
                     </div>
-                    <h1 id="headerSchoolTitle" class="text-base sm:text-lg font-extrabold text-white truncate">Yayasan Al-Amin Tabanan</h1>
-                    <p id="currentDateText" class="text-[11px] text-emerald-100/70 truncate">Memuat kalender WITA...</p>
+                    <h1 id="headerSchoolTitle" class="text-base sm:text-lg font-extrabold text-white truncate">MA AL-AMIN TABANAN</h1>
+                    <p id="currentDateText" class="text-[11px] text-emerald-100/70 truncate">MA AL-AMIN TABANAN • Gg. IV No.9, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121</p>
                     <p id="lastSyncTimeLabel" class="text-[10px] text-white/50 font-mono">Sinkron terakhir: belum sinkron • Antrean: 0</p>
                 </div>
             </div>
@@ -654,8 +680,8 @@
                 <div class="p-4 rounded-2xl bg-black/35 border border-yellow-400/30 space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <h3 class="text-xs font-extrabold text-yellow-300 uppercase">Titik Koordinat Gerbang Sekolah & Radius Absen Mandiri</h3>
-                            <p class="text-[11px] text-white/65">Petunjuk: Klik kanan di Google Maps pada titik gerbang sekolah, lalu salin koordinatnya.</p>
+                            <h3 class="text-xs font-extrabold text-yellow-300 uppercase">Titik Koordinat Gerbang MA AL-AMIN TABANAN & Radius Absen Mandiri</h3>
+                            <p class="text-[11px] text-white/65">Alamat: MA AL-AMIN TABANAN, Gg. IV No.9, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121 (-8.540534, 115.136885 / -8.540553, 115.136954)</p>
                         </div>
                         <button type="button" onclick="fillSchoolCoordsFromDevice()" class="ios-pill-btn px-3 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold shrink-0">
                             📍 Gunakan lokasi perangkat ini
@@ -664,11 +690,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="text-[11px] text-white/70 font-semibold">Latitude Sekolah</label>
-                            <input id="settingsLatSekolah" type="number" step="any" value="-8.5405328" class="w-full px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white font-mono">
+                            <input id="settingsLatSekolah" type="number" step="any" value="-8.540534" class="w-full px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white font-mono">
                         </div>
                         <div>
                             <label class="text-[11px] text-white/70 font-semibold">Longitude Sekolah</label>
-                            <input id="settingsLngSekolah" type="number" step="any" value="115.1369628" class="w-full px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white font-mono">
+                            <input id="settingsLngSekolah" type="number" step="any" value="115.136885" class="w-full px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white font-mono">
                         </div>
                         <div>
                             <label class="text-[11px] text-white/70 font-semibold">Radius Maksimal (Meter)</label>
@@ -753,14 +779,115 @@
 
     <script>
         // ============================================================================
-        // KONSTANTA WAJIB: URL WEB APP GOOGLE APPS SCRIPT & LOKASI GERBANG SEKOLAH
+        // KONSTANTA WAJIB: URL WEB APP GOOGLE APPS SCRIPT & LOKASI GERBANG MA AL-AMIN TABANAN
         // ============================================================================
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzV4FbLZq1ZMIq5wmuP3uXCWcvzxxvHcRtah7gJIIGmaSSIBXicJ1gDOvaDEtIgJPXG/exec';
         const WITA_TZ = 'Asia/Makassar';
-        const GATE_LAT_DEFAULT = -8.5405328;
-        const GATE_LNG_DEFAULT = 115.1369628;
+        const GATE_LAT_DEFAULT = -8.540534;
+        const GATE_LNG_DEFAULT = 115.136885;
+        const GATE_LAT_ALT = -8.540553;
+        const GATE_LNG_ALT = 115.136954;
         const GATE_RADIUS_DEFAULT = 150;
-        const SCHOOL_DOCX_HEADER = 'Yayasan Al-Amin Tabanan • MTS Al-Amin Tabanan, Gg. IV No.8, Delod Peken, Tabanan, Bali';
+        const SCHOOL_DOCX_HEADER = 'MA AL-AMIN TABANAN • Gg. IV No.9, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121';
+        const SCHOOL_LOGO_URL = 'https://drive.google.com/thumbnail?id=16ta0pqLy9pz9GvOEjvhJOXwedf6Vk2WY&sz=w256';
+
+        let prewarmedAdminGps = null;
+        let adminGeoWatchId = null;
+
+        function removeWhiteBgFromAdminLogos() {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function () {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    const w = canvas.width;
+                    const h = canvas.height;
+                    const r = Math.round(Math.min(w, h) * 0.22);
+
+                    ctx.beginPath();
+                    ctx.moveTo(r, 0);
+                    ctx.lineTo(w - r, 0);
+                    ctx.quadraticCurveTo(w, 0, w, r);
+                    ctx.lineTo(w, h - r);
+                    ctx.quadraticCurveTo(w, h, w - r, h);
+                    ctx.lineTo(r, h);
+                    ctx.quadraticCurveTo(0, h, 0, h - r);
+                    ctx.lineTo(0, r);
+                    ctx.quadraticCurveTo(0, 0, r, 0);
+                    ctx.closePath();
+                    ctx.clip();
+
+                    ctx.drawImage(img, 0, 0);
+                    const imgData = ctx.getImageData(0, 0, w, h);
+                    const d = imgData.data;
+                    const visited = new Uint8Array(w * h);
+                    const queue = [];
+                    const isNearWhite = (idx) => d[idx] > 230 && d[idx + 1] > 230 && d[idx + 2] > 230;
+
+                    for (let x = 0; x < w; x++) queue.push(x, (h - 1) * w + x);
+                    for (let y = 0; y < h; y++) queue.push(y * w, y * w + (w - 1));
+
+                    while (queue.length > 0) {
+                        const pos = queue.pop();
+                        if (pos < 0 || pos >= w * h || visited[pos]) continue;
+                        visited[pos] = 1;
+                        const idx = pos * 4;
+                        if (isNearWhite(idx)) {
+                            d[idx + 3] = 0;
+                            const x = pos % w;
+                            const y = (pos - x) / w;
+                            if (x > 0) queue.push(pos - 1);
+                            if (x < w - 1) queue.push(pos + 1);
+                            if (y > 0) queue.push(pos - w);
+                            if (y < h - 1) queue.push(pos + w);
+                        }
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    const cleanUrl = canvas.toDataURL('image/png');
+                    document.querySelectorAll('img[data-school-logo]').forEach(el => { el.src = cleanUrl; });
+                } catch (e) {}
+            };
+            img.src = SCHOOL_LOGO_URL;
+        }
+
+        function setAdminLoading(show, text = 'Memverifikasi Otorisasi Staf...') {
+            const ov = document.getElementById('adminLoadingOverlay');
+            const tx = document.getElementById('adminLoadingText');
+            if (tx) tx.textContent = text;
+            if (ov) ov.classList.toggle('hidden', !show);
+        }
+
+        // Pre-warm izin kamera & geolokasi sejak pertama kali membuka web_admin.html
+        async function prewarmAdminPermissionsOnLoad() {
+            if (navigator.geolocation) {
+                const updatePos = (pos) => {
+                    prewarmedAdminGps = {
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude,
+                        accuracy: pos.coords.accuracy
+                    };
+                };
+                navigator.geolocation.getCurrentPosition(updatePos, () => {}, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 15000
+                });
+                adminGeoWatchId = navigator.geolocation.watchPosition(
+                    updatePos,
+                    () => {},
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+                );
+            }
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+                    stream.getTracks().forEach(t => t.stop());
+                } catch (e) {}
+            }
+        }
 
         function calculateHaversineMeters(lat1, lon1, lat2, lon2) {
             const R = 6371000;
@@ -832,8 +959,8 @@
         let sessionToken = loadLocal(KEYS.SESSION_TOKEN, '');
         let staffInfo = loadLocal(KEYS.STAFF_INFO, { nis: '', peran: '', nama: '' });
         let schoolConfig = loadLocal(KEYS.CONFIG, {
-            namaSekolah: 'Yayasan Al-Amin Tabanan (MTS Al-Amin Tabanan)',
-            alamatSekolah: 'Gg. IV No.8, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121',
+            namaSekolah: 'MA AL-AMIN TABANAN',
+            alamatSekolah: 'MA AL-AMIN TABANAN, Gg. IV No.9, Delod Peken, Kec. Tabanan, Kabupaten Tabanan, Bali 82121',
             jamMasuk: '07:15',
             toleransiMenit: 15,
             jendelaMandiriMulai: '06:00',
@@ -846,11 +973,11 @@
             pengumumanBerlaku: '',
             modeDarurat: false
         });
-        if (Number(schoolConfig.latSekolah) === -8.5405 || Number(schoolConfig.lngSekolah) === 115.1253) {
+        if (Number(schoolConfig.latSekolah) === -8.5405 || Number(schoolConfig.lngSekolah) === 115.1253 || Number(schoolConfig.latSekolah) === -8.5405328) {
             schoolConfig.latSekolah = GATE_LAT_DEFAULT;
             schoolConfig.lngSekolah = GATE_LNG_DEFAULT;
         }
-
+        schoolConfig.namaSekolah = 'MA AL-AMIN TABANAN';
         let masterStudents = loadLocal(KEYS.STUDENTS, []);
         let recapByDate = loadLocal(KEYS.RECAP_MAP, {});
         let syncQueue = loadLocal(KEYS.QUEUE, []);
@@ -948,6 +1075,7 @@
                 document.getElementById('authGateModal').classList.remove('hidden');
                 return;
             }
+            setAdminLoading(true, 'Memeriksa sesi aktif staf...');
             try {
                 const res = await callGasGet({ action: 'cekSesi' });
                 if (res.result === 'success' && res.data && (res.data.peran === 'ADMIN' || res.data.peran === 'PIKET')) {
@@ -959,7 +1087,7 @@
                     saveLocal(KEYS.STAFF_INFO, staffInfo);
                     document.getElementById('authGateModal').classList.add('hidden');
                     updateRoleBadgeUi();
-                    fetchInitData(false);
+                    await fetchInitData(false);
                 } else {
                     sessionToken = '';
                     saveLocal(KEYS.SESSION_TOKEN, '');
@@ -973,6 +1101,8 @@
                 } else {
                     document.getElementById('authGateModal').classList.remove('hidden');
                 }
+            } finally {
+                setAdminLoading(false);
             }
         }
 
@@ -981,6 +1111,8 @@
             const pinInputEl = document.getElementById('loginPinInput');
             const pinVal = pinInputEl.value.trim();
             const errEl = document.getElementById('loginErrorText');
+            const btnSubmit = document.getElementById('loginSubmitBtn');
+            const btnText = document.getElementById('loginSubmitBtnText');
             errEl.classList.add('hidden');
 
             if (!pinVal) {
@@ -989,6 +1121,10 @@
                 return;
             }
             pinInputEl.value = '';
+
+            btnSubmit.disabled = true;
+            if (btnText) btnText.textContent = 'Memverifikasi PIN...';
+            setAdminLoading(true, 'Memverifikasi Otorisasi ' + roleVal + ' ke Server...');
 
             try {
                 const res = await callGasPost({
@@ -1013,10 +1149,14 @@
                 document.getElementById('authGateModal').classList.add('hidden');
                 updateRoleBadgeUi();
                 showToast('Login berhasil sebagai ' + staffInfo.peran, 'emerald');
-                fetchInitData(false);
+                await fetchInitData(false);
             } catch (err) {
                 errEl.textContent = err.message;
                 errEl.classList.remove('hidden');
+            } finally {
+                setAdminLoading(false);
+                btnSubmit.disabled = false;
+                if (btnText) btnText.textContent = 'Masuk & Buka Sesi';
             }
         }
 
@@ -1061,7 +1201,8 @@
                 const d = res.data;
                 if (d.config) {
                     schoolConfig = d.config;
-                    if (Number(schoolConfig.latSekolah) === -8.5405 || Number(schoolConfig.lngSekolah) === 115.1253) {
+                    schoolConfig.namaSekolah = 'MA AL-AMIN TABANAN';
+                    if (Number(schoolConfig.latSekolah) === -8.5405 || Number(schoolConfig.lngSekolah) === 115.1253 || Number(schoolConfig.latSekolah) === -8.5405328) {
                         schoolConfig.latSekolah = GATE_LAT_DEFAULT;
                         schoolConfig.lngSekolah = GATE_LNG_DEFAULT;
                     }
@@ -1562,8 +1703,8 @@
                     cardEl.className = 'id-card-item';
                     cardEl.innerHTML = `
                         <div style="flex:1; padding-right:3mm; overflow:hidden;">
-                            <div style="font-size:6.5pt; font-weight:800; color:#0c5c2c; text-transform:uppercase;">YAYASAN AL-AMIN TABANAN</div>
-                            <div style="font-size:5.5pt; color:#444; margin-bottom:2mm;">MTS Al-Amin • Gg. IV No.8, Delod Peken, Tabanan</div>
+                            <div style="font-size:7pt; font-weight:800; color:#0c5c2c; text-transform:uppercase;">MA AL-AMIN TABANAN</div>
+                            <div style="font-size:5.5pt; color:#444; margin-bottom:2mm;">Gg. IV No.9, Delod Peken, Kec. Tabanan, Bali 82121</div>
                             <div style="font-size:9.5pt; font-weight:800; color:#000; line-height:1.15; margin-bottom:1.5mm;">${escapeHtml(c.nama)}</div>
                             <div style="font-size:8pt; font-weight:700; color:#0c5c2c;">NIS: ${escapeHtml(c.nis)}</div>
                             <div style="font-size:8pt; font-weight:600; color:#222;">Kelas: ${escapeHtml(c.kelas)}</div>
@@ -1651,7 +1792,7 @@
                                 new TextRun({ text: `${idx + 1}. ${st.nama}`, bold: true, size: 24 }),
                                 new TextRun({ text: `   (Kelas: ${st.kelas}  |  NIS: ${st.nis})`, size: 20, break: 1 }),
                                 new TextRun({ text: `PIN AKSES PORTAL SISWA (6 DIGIT): ${st.pin}`, bold: true, size: 26, break: 1 }),
-                                new TextRun({ text: 'Rahasiakan PIN ini. Gunakan untuk login di Portal Presensi Siswa Yayasan Al-Amin Tabanan.', italics: true, size: 16, break: 1 })
+                                new TextRun({ text: 'Rahasiakan PIN ini. Gunakan untuk login di Portal Presensi Siswa MA AL-AMIN TABANAN.', italics: true, size: 16, break: 1 })
                             ]
                         })
                     );
@@ -2370,30 +2511,22 @@
         }
 
         function fillSchoolCoordsFromDevice() {
-            if (!navigator.geolocation) {
-                showToast('Geolocation tidak didukung browser ini.', 'rose');
+            // Hanya menggunakan lokasi GPS yang sudah di-prewarm saat halaman pertama kali dibuka (tanpa meminta izin ulang saat interaksi tombol)
+            if (!prewarmedAdminGps) {
+                showToast('Lokasi perangkat belum terkunci. Pastikan izin GPS sudah aktif saat membuka web.', 'rose');
                 return;
             }
-            showToast('Mengambil titik GPS perangkat...', 'gold');
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-                    document.getElementById('settingsLatSekolah').value = lat.toFixed(7);
-                    document.getElementById('settingsLngSekolah').value = lng.toFixed(7);
-
-                    const distFromGate = calculateHaversineMeters(GATE_LAT_DEFAULT, GATE_LNG_DEFAULT, lat, lng);
-                    if (distFromGate > 100) {
-                        showToast('Lokasi perangkat ini cukup jauh dari titik sekolah. Pastikan Anda berada di gerbang sekolah.', 'rose');
-                    } else {
-                        showToast('Koordinat berhasil diisi dari lokasi perangkat ini!', 'emerald');
-                    }
-                },
-                (err) => {
-                    showToast('Gagal mengambil lokasi: ' + err.message, 'rose');
-                },
-                { enableHighAccuracy: true, timeout: 15000 }
-            );
+            const lat = prewarmedAdminGps.latitude;
+            const lng = prewarmedAdminGps.longitude;
+            document.getElementById('settingsLatSekolah').value = lat.toFixed(6);
+            document.getElementById('settingsLngSekolah').value = lng.toFixed(6);
+            const d1 = calculateHaversineMeters(GATE_LAT_DEFAULT, GATE_LNG_DEFAULT, lat, lng);
+            const d2 = calculateHaversineMeters(GATE_LAT_ALT, GATE_LNG_ALT, lat, lng);
+            if (Math.min(d1, d2) > 100) {
+                showToast('Lokasi perangkat ini cukup jauh dari titik sekolah. Pastikan Anda berada di gerbang MA AL-AMIN TABANAN.', 'rose');
+            } else {
+                showToast('Koordinat berhasil diisi dari lokasi presisi perangkat ini!', 'emerald');
+            }
         }
 
         async function toggleEmergencyMode() {
@@ -2636,11 +2769,15 @@
             selectedWorkingDate = getWitaDateString();
             document.getElementById('workingDateInput').value = selectedWorkingDate;
 
+            // Bersihkan background putih logo & pre-warm izin kamera/geolokasi saat pertama kali membuka web
+            removeWhiteBgFromAdminLogos();
+            prewarmAdminPermissionsOnLoad();
+
             setInterval(() => {
                 const p = getWitaParts(new Date());
                 document.getElementById('liveClock').textContent = `${p.timeStr} WITA`;
                 document.getElementById('kioskClock').textContent = p.timeStr;
-                document.getElementById('currentDateText').textContent = `Tanggal WITA: ${p.dateStr} • ${masterStudents.length} Siswa Terdaftar`;
+                document.getElementById('currentDateText').textContent = `MA AL-AMIN TABANAN • Tanggal WITA: ${p.dateStr} • ${masterStudents.length} Siswa`;
             }, 1000);
 
             document.getElementById('absenListContainer').addEventListener('click', (e) => {
